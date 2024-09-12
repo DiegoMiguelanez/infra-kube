@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+    config.vm.define "master" do |subconfig|
+        subconfig.vm.box = "generic/ubuntu2004"
+        subconfig.vm.hostname = "master"
+        
+        # Cambiar la configuración de red si es necesario
+        subconfig.vm.network "public_network", bridge: "BRIDGE"
+
+         # Configuración específica para VirtualBox
+         subconfig.vm.provider "virtualbox" do |vb|
+            vb.name = "ubuntu_cluster_master"  # Nombre de la VM en VirtualBox
+            vb.memory = 2048  # Configura la memoria RAM
+            vb.cpus = 2       # Configura el número de CPUs
+        end
+
+        subconfig.vm.provision "ansible" do |a|
+            a.verbose = "v"
+            a.playbook = "master_playbook.yaml"
+        end
+    end
+end
